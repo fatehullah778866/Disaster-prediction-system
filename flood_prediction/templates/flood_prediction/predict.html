@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Risk Predictor - HazardWatch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            color: #4ecdc4 !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #44a08d !important;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #4ecdc4;
+            font-size: 1.1rem;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .help-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #44a08d, #4ecdc4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #4ecdc4;
+            color: #4ecdc4;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(78, 205, 196, 0.1);
+        }
+        
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features h3 {
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .alert-info {
+            background: rgba(23, 162, 184, 0.2);
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .alert-error {
+            background: rgba(220, 53, 69, 0.2);
+            border-left: 4px solid #dc3545;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-col {
+            flex: 1 0 calc(33.333% - 20px);
+            margin: 0 10px 20px;
+            min-width: 200px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .form-card {
+                padding: 25px;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            
+            .form-col {
+                flex: 1 0 100%;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Flood Risk Predictor</h1>
+            <p class="subtitle">Enter environmental data for AI-powered flood risk assessment</p>
+            <nav>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li>
+                        <a class="nav-link" href="{% url 'dashboard-home' %}">Dashboard</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="alert alert-info" id="info-alert">
+            <p>Please fill all the required fields for accurate flood risk prediction</p>
+        </div>
+        
+        <div class="alert alert-error" id="error-alert">
+            <p id="error-message"></p>
+        </div>
+        
+        <div class="form-card">
+            <form method="post" novalidate class="needs-validation" id="flood-form">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <!-- Numeric fields -->
+                    {% for f in numeric_fields %}
+                    <div class="form-col">
+                        <label for="id_{{ f }}">{{ f|cut:"_"|title }}</label>
+                        <input type="number" step="any" class="form-control" id="id_{{ f }}" name="{{ f }}" required>
+                        <p class="help-text">Enter {{ f|cut:"_"|title }} value</p>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Categorical fields -->
+                    {% for f in categorical_fields %}
+                    <div class="form-col">
+                        <label for="id_{{ f }}">{{ f|cut:"_"|title }}</label>
+                        
+                        {% if f|lower == "region" and region_options %}
+                        <select class="form-select" id="id_{{ f }}" name="{{ f }}" required>
+                            <option value="" selected disabled>Choose region</option>
+                            {% for opt in region_options %}
+                            <option value="{{ opt }}">{{ opt|title }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="help-text">Select your region</p>
+                        {% else %}
+                        <input type="text" class="form-control" id="id_{{ f }}" name="{{ f }}" required>
+                        <p class="help-text">Enter {{ f|cut:"_"|title }} information</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn" id="submit-btn">
+                        Predict Flood Risk
+                    </button>
+                    <button type="reset" class="btn btn-outline">Reset Form</button>
+                </div>
+                
+                <p class="help-text" style="margin-top: 20px;">
+                    Pro tip: For categorical fields, use the suggested format. Select region from dropdown where available.
+                </p>
+            </form>
+        </div>
+        
+        <div class="features">
+            <h3>What We Analyze</h3>
+            <ul class="feature-list">
+                <li>Flood probability detection using machine learning</li>
+                <li>Environmental factor assessment</li>
+                <li>Risk level classification (High/Medium/Low)</li>
+                <li>Impact area estimation</li>
+                <li>Detailed risk report generation</li>
+                <li>Historical data correlation</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Flood Risk Detection System &copy; 2023 | Powered by Machine Learning & Django</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('flood-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorAlert = document.getElementById('error-alert');
+            const infoAlert = document.getElementById('info-alert');
+            
+            // Show info alert initially
+            infoAlert.style.display = 'block';
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                // Basic validation
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showError('Please fill all required fields correctly.');
+                } else {
+                    // Show loading state
+                    submitBtn.innerHTML = '<span class="loading"></span> Analyzing...';
+                    submitBtn.disabled = true;
+                }
+                
+                form.classList.add('was-validated');
+            });
+            
+            // Form reset handler
+            form.addEventListener('reset', function() {
+                form.classList.remove('was-validated');
+                hideError();
+                infoAlert.style.display = 'block';
+            });
+            
+            function showError(message) {
+                document.getElementById('error-message').textContent = message;
+                errorAlert.style.display = 'block';
+                infoAlert.style.display = 'none';
+            }
+            
+            function hideError() {
+                errorAlert.style.display = 'none';
+            }
+            
+            // Handle page refresh to reset form state
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    submitBtn.innerHTML = 'Predict Flood Risk';
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Satellite Image - Landslide Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4ecdc4;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            color: #4ecdc4 !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #44a08d !important;
+        }
+        
+        .upload-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #4ecdc4;
+            font-size: 1.1rem;
+        }
+        
+        .file-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed rgba(78, 205, 196, 0.5);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input:hover {
+            border-color: #4ecdc4;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .file-input::file-selector-button {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input::file-selector-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .help-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #44a08d, #4ecdc4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features h3 {
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .alert-info {
+            background: rgba(23, 162, 184, 0.2);
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .alert-error {
+            background: rgba(220, 53, 69, 0.2);
+            border-left: 4px solid #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-card {
+                padding: 25px;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+        
+        .file-preview {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Landslide Prediction System</h1>
+            <p class="subtitle">Upload satellite imagery for AI-powered landslide detection</p>
+            <nav>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li>
+                        <a class="nav-link" href="{% url 'dashboard-home' %}">Dashboard</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="alert alert-info" id="info-alert">
+            <p>Please select a satellite image for analysis. Supported formats: JPG, PNG, TIF</p>
+        </div>
+        
+        <div class="alert alert-error" id="error-alert">
+            <p id="error-message"></p>
+        </div>
+        
+        <div class="upload-card">
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_image">Satellite Image Upload</label>
+                    <div class="file-input-container">
+                        <input type="file" class="file-input" id="id_image" name="image" 
+                               accept=".jpg,.jpeg,.png,.tif,.tiff" required 
+                               aria-describedby="file-help">
+                    </div>
+                    <p class="help-text" id="file-help">
+                        Upload high-resolution satellite imagery for landslide detection analysis. 
+                        Supported formats: JPG, PNG, TIF. Maximum file size: 10MB.
+                    </p>
+                </div>
+                
+                <div class="file-preview" id="file-preview">
+                    <img id="preview-image" src="" alt="Image preview">
+                    <p class="help-text" id="file-name"></p>
+                </div>
+                
+                <button type="submit" class="btn" id="submit-btn">
+                    Analyze for Landslides
+                </button>
+            </form>
+        </div>
+        
+        <div class="features">
+            <h3>What We Analyze</h3>
+            <ul class="feature-list">
+                <li>Landslide probability detection using deep learning</li>
+                <li>Terrain stability assessment</li>
+                <li>Risk level classification (High/Medium/Low)</li>
+                <li>Affected area estimation</li>
+                <li>Detailed analysis report generation</li>
+                <li>Visual segmentation mask generation</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Landslide Detection System &copy; 2023 | Powered by Deep Learning & Django</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('id_image');
+            const filePreview = document.getElementById('file-preview');
+            const previewImage = document.getElementById('preview-image');
+            const fileName = document.getElementById('file-name');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorAlert = document.getElementById('error-alert');
+            const infoAlert = document.getElementById('info-alert');
+            const form = document.getElementById('upload-form');
+            
+            // Show info alert initially
+            infoAlert.style.display = 'block';
+            
+            // File input change handler
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                
+                if (file) {
+                    // Check file size (max 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                        resetFileInput();
+                        return;
+                    }
+                    
+                    // Check file type
+                    const validTypes = ['image/jpeg', 'image/png', 'image/tiff'];
+                    if (!validTypes.includes(file.type)) {
+                        showError('Please select a valid image file (JPG, PNG, or TIF).');
+                        resetFileInput();
+                        return;
+                    }
+                    
+                    // Show file name
+                    fileName.textContent = file.name;
+                    
+                    // Create preview for images
+                    if (file.type.includes('image')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            filePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    
+                    // Hide alerts
+                    hideError();
+                    infoAlert.style.display = 'none';
+                }
+            });
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                if (!fileInput.files.length) {
+                    e.preventDefault();
+                    showError('Please select an image file first.');
+                    return;
+                }
+                
+                // Show loading state
+                submitBtn.innerHTML = '<span class="loading"></span> Analyzing...';
+                submitBtn.disabled = true;
+            });
+            
+            function showError(message) {
+                document.getElementById('error-message').textContent = message;
+                errorAlert.style.display = 'block';
+                infoAlert.style.display = 'none';
+            }
+            
+            function hideError() {
+                errorAlert.style.display = 'none';
+            }
+            
+            function resetFileInput() {
+                fileInput.value = '';
+                filePreview.style-displ
+ay: 'none';
+                previewImage.src = '';
+                fileName.textContent = '';
+            }
+            
+            // Handle page refresh to reset form state
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    submitBtn.innerHTML = 'Analyze for Landslides';
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

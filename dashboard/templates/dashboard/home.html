@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Disaster Prediction Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e2e8f0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 0.5px;
+    }
+
+    .dashboard-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #93c5fd;
+    }
+
+    .card-glass {
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+      padding: 2rem;
+      text-align: center;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card-glass:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+    }
+
+    .card-glass h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .btn-glass {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      transition: all .2s ease;
+      color: #fff;
+    }
+    .btn-glass:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .btn-fire { background: linear-gradient(135deg, #ef4444, #f97316); }
+    .btn-flood { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+    .btn-land { background: linear-gradient(135deg, #10b981, #22c55e); }
+
+    footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 1rem;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-dark">
+    <div class="container">
+      <span class="navbar-brand">🌍 Disaster Prediction Dashboard</span>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h1 class="text-center mb-5 dashboard-title">Centralized Prediction Hub</h1>
+    
+    <div class="row g-4">
+      <!-- Fire -->
+      <div class="col-md-4">
+        <div class="card-glass">
+          <div style="font-size:2rem;">🔥</div>
+          <h2>Fire Prediction</h2>
+          <a href="{% url 'predict_fire' %}" class="btn-glass btn-fire">Go to App</a>
+        </div>
+      </div>
+
+      <!-- Flood -->
+      <div class="col-md-4">
+        <div class="card-glass">
+          <div style="font-size:2rem;">🌊</div>
+          <h2>Flood Prediction</h2>
+          <a href="{% url 'predict_flood' %}" class="btn-glass btn-flood">Go to App</a>
+        </div>
+      </div>
+
+      <!-- Landslide -->
+      <div class="col-md-4">
+        <div class="card-glass">
+          <div style="font-size:2rem;">⛰️</div>
+          <h2>Landslide Prediction</h2>
+          <a href="{% url 'upload_image' %}" class="btn-glass btn-land">Go to App</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Disaster Prediction Dashboard | Powered by Django & AI</p>
+  </footer>
+
+</body>
+</html>
